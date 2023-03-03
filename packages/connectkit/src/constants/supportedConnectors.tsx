@@ -8,7 +8,7 @@
 
 import { ReactNode } from 'react';
 import Logos from './../assets/logos';
-import { isMetaMask } from './../utils';
+import { isMetaMask , isBitKeep} from './../utils';
 
 let supportedConnectors: {
   id: string;
@@ -145,6 +145,53 @@ if (typeof window != 'undefined') {
       } as IDictionary,
       extensionIsInstalled: () => {
         return isMetaMask();
+      },
+    },
+    {
+      id: 'bitKeep',
+      name: 'BitKeep',
+      logos: {
+        default: <Logos.BitKeep background />,
+        mobile: <Logos.BitKeep background />,
+        transparent: (
+          <div
+            style={{
+              transform: 'scale(0.86)',
+              position: 'relative',
+              width: '100%',
+            }}
+          >
+            <Logos.BitKeep />
+          </div>
+        ),
+        connectorButton: (
+          <div
+            style={{
+              transform: 'scale(1.1)',
+            }}
+          >
+            <Logos.BitKeep />
+          </div>
+        ),
+      },
+      logoBackground:
+        'linear-gradient(0deg, var(--ck-brand-metamask-12), var(--ck-brand-metamask-11))',
+      scannable: false,
+      // defaultConnect:  () => {},
+      extensions: {
+        chrome:
+          'https://chrome.google.com/webstore/detail/bitkeep-crypto-nft-wallet/jiidiaalihmmhddjgbnbgdfflelocpak',
+        brave:
+          'https://chrome.google.com/webstore/detail/bitkeep-crypto-nft-wallet/jiidiaalihmmhddjgbnbgdfflelocpak',
+      } as IDictionary,
+      appUrls: {
+        download: 'https://connect.family.co/v0/download/bitkeep',
+        website: 'https://bitkeep.io/en/download',
+        android: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
+        ios: 'https://apps.apple.com/app/bitkeep/id1395301115',
+      } as IDictionary,
+      extensionIsInstalled: () => {
+        return isBitKeep();
       },
     },
     {

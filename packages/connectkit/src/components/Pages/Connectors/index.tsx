@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useContext, routes } from '../../ConnectKit';
 import supportedConnectors from '../../../constants/supportedConnectors';
-import { isMetaMask, isCoinbaseWallet } from './../../../utils';
+import { isMetaMask, isCoinbaseWallet, isBitKeep } from './../../../utils';
 
 import { useConnect } from '../../../hooks/useConnect';
 
@@ -64,6 +64,12 @@ const Wallets: React.FC = () => {
           options: { ...c.options, qrcode: false, version: '1' },
         });
         break;
+      case 'bitKeep':
+        connector = new WalletConnectConnector({
+          chains: c.chains,
+          options: { ...c.options, qrcode: false, version: '1' },
+        });
+        break;  
       case 'coinbaseWallet':
         connector = new CoinbaseWalletConnector({
           chains: c.chains,
@@ -93,6 +99,20 @@ const Wallets: React.FC = () => {
         }
       });
     }
+    if (c.id === 'bitKeep' && mobile) {
+      let connnector = connector as WalletConnectConnector;
+      connector.on('message', async ({ type }) => {
+        if (type === 'connecting') {
+          const uri = await getProviderUri(connnector);
+          const uriString = isAndroid()
+            ? `bitkeep://?action=connect&connectType=wc&value=${encodeURIComponent(
+              uri
+            )}`
+            : `https://bkcode.vip?value=${encodeURIComponent(uri)}`;
+          window.location.href = uriString;
+        }
+      });
+    }
 
     try {
       await connectAsync({ connector: connector });
@@ -113,7 +133,8 @@ const Wallets: React.FC = () => {
     const needsInjectedWalletFallback =
       typeof window !== 'undefined' &&
       ethereum &&
-      !isMetaMask() &&
+      !isMetaMask() && 
+      !isBitKeep() &&
       !isCoinbaseWallet();
     //!ethereum?.isBraveWallet; // TODO: Add this line when Brave is supported
 
@@ -197,6 +218,58 @@ const Wallets: React.FC = () => {
               );
             })}
           </MobileConnectorsContainer>
+          {/* <MobileConnectorsContainer>
+            {connectors.map((connector) => {
+              const info = supportedConnectors.filter(
+                (c) => c.id === connector.id
+              )[0];
+              if (!info) return null;
+
+              let logos = info.logos;
+              let name = info.shortName ?? info.name ?? connector.name;
+
+              if (info.id === 'injected') {
+                if (!shouldShowInjectedConnector()) return null;
+
+                const foundInjector = findInjectedConnectorInfo(connector.name);
+                if (foundInjector) {
+                  logos = foundInjector.logos;
+                  name = foundInjector.name.replace(' Wallet', '');
+                }
+              }
+
+              if (info.id === 'walletConnect') {
+                name =
+                  context.options?.walletConnectName ?? locales.otherWallets;
+              }
+
+              return (
+                <MobileConnectorButton
+                  key={`m-${connector.id}`}
+                  //disabled={!connector.ready}
+                  onClick={() => {
+                    if (
+                      info.id === 'injected' ||
+                      (info.id === 'bitKeep' && isBitKeep())
+                    ) {
+                      context.setRoute(routes.CONNECT);
+                      context.setConnector(connector.id);
+                    } else {
+                      openDefaultConnect(connector.id);
+                    }
+                  }}
+                >
+                  <MobileConnectorIcon>
+                    {logos.mobile ??
+                      logos.appIcon ??
+                      logos.connectorButton ??
+                      logos.default}
+                  </MobileConnectorIcon>
+                  <MobileConnectorLabel>{name}</MobileConnectorLabel>
+                </MobileConnectorButton>
+              );
+            })}
+          </MobileConnectorsContainer> */}
           <InfoBox>
             <ModalContent style={{ padding: 0, textAlign: 'left' }}>
               <ModalH1 $small>{locales.connectorsScreen_h1}</ModalH1>

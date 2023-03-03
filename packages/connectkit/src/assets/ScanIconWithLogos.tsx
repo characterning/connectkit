@@ -22,6 +22,7 @@ const IconContainer = styled(motion.div)`
 const ScanIconWithLogos: React.FC<{ logo?: React.ReactNode }> = ({ logo }) => {
   const logoList = [
     <Logos.MetaMask background={true} />,
+    <Logos.BitKeep background={true} />,
     <Logos.Coinbase background={true} />,
     <Logos.Crypto />,
     <Logos.ImToken />,

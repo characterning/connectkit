@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Chain } from 'wagmi';
 import { walletConnect } from './connectors/walletConnect';
 import { metaMask } from './connectors/metaMask';
+import { bitKeep } from './connectors/bitKeep';
 import { coinbaseWallet } from './connectors/coinbaseWallet';
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect';
 
@@ -33,6 +34,7 @@ export const getDefaultConnectors = (chains: Chain[], appName: string) => {
   const connectors: any = [
     walletConnect({ chains }),
     metaMask({ chains }),
+    bitKeep({ chains }),
     coinbaseWallet({
       chains,
       appName,

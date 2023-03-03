@@ -1,6 +1,7 @@
 import { injected } from './connectors/injected';
 import { walletConnect } from './connectors/walletConnect';
 import { metaMask } from './connectors/metaMask';
+import { bitKeep } from './connectors/bitKeep';
 import { coinbaseWallet } from './connectors/coinbaseWallet';
 import { rainbow } from './connectors/rainbow';
 import { argent } from './connectors/argent';
@@ -28,6 +29,7 @@ export const getWallets = ({
     injected({ chains }),
     walletConnect({ chains }),
     metaMask({ chains }),
+    bitKeep({ chains }),
     coinbaseWallet({ chains }),
     rainbow({ chains }),
     argent({ chains }),

@@ -14,6 +14,8 @@ function useDefaultWallets(): WalletProps[] | any {
   // If missing metamask or coinbasewallet connector from wagmi config, add them to this list
   if (!connectors.find((c) => c.id === 'metaMask'))
     defaultWallets.push('metaMask');
+  if (!connectors.find((c) => c.id === 'bitKeep'))
+    defaultWallets.push('bitKeep');  
   if (!connectors.find((c) => c.id === 'coinbaseWallet'))
     defaultWallets.push('coinbaseWallet');
 

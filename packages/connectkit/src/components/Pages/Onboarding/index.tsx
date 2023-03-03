@@ -66,6 +66,19 @@ const Introduction: React.FC = () => {
                 <FloatWrapper>
                   <RotateWrapper>
                     <LogoGraphic>
+                      <Logos.BitKeep background />
+                    </LogoGraphic>
+                  </RotateWrapper>
+                </FloatWrapper>
+              </LogoInner>
+            </LogoPosition>
+          </Logo>
+          <Logo>
+            <LogoPosition>
+              <LogoInner>
+                <FloatWrapper>
+                  <RotateWrapper>
+                    <LogoGraphic>
                       <Logos.Trust />
                     </LogoGraphic>
                   </RotateWrapper>
