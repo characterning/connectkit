@@ -4,15 +4,56 @@ import {
   getDefaultWalletConnectConnector,
   getProviderUri,
 } from '../wallet';
-import { BitKeepConnector } from '../walletConnectors/bitKeepWallet/bitKeepWallet';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { isMobile, isBitKeep, isAndroid } from '../../utils';
 import Logos from '../../assets/logos';
+
 declare global {
   interface Window {
     bitkeep: any;
   }
 }
+export  class  BitkeepConnector extends InjectedConnector {
+  id: string;
+  ready: boolean;
+  provider: any;
+  constructor({ chains, options = {} }) {
+    const _options = {
+      name: 'BitKeep',
+      ...options,
+    };
+    super({ chains, options: _options });
+
+    this.id = 'Bitkeep';
+    this.ready =
+      typeof window != 'undefined' &&
+      !!this.findProvider(window?.bitkeep?.ethereum);
+  }
+
+  async getProvider() {
+    if (typeof window !== 'undefined') {
+      // TODO: Fallback to `ethereum#initialized` event for async injection
+      // https://github.com/BitKeep/detect-provider#synchronous-and-asynchronous-injection=
+      this.provider = window.bitkeep?.ethereum;
+    }
+    return this.provider;
+  }
+  getReady(ethereum: NonNullable<typeof window['ethereum']>) {
+    if (!ethereum || !ethereum.isBitKeep) return;
+    // Brave tries to make itself look like BitKeep
+    // Could also try RPC `web3_clientVersion` if following is unreliable
+    if (ethereum.isBraveWallet && !ethereum._events && !ethereum._state) return;
+    if (ethereum.isTokenPocket) return;
+    if (ethereum.isTokenary) return;
+    return ethereum;
+  }
+  findProvider(ethereum: NonNullable<typeof window['ethereum']>) {
+    if (ethereum?.providers) return ethereum.providers.find(this.getReady);
+    return this.getReady(ethereum);
+  }
+}
+
 export const bitKeep = ({ chains }: WalletOptions): WalletProps => {
   const isInstalled = isBitKeep();
   const shouldUseWalletConnect = isMobile() && !isInstalled;
@@ -57,7 +98,7 @@ export const bitKeep = ({ chains }: WalletOptions): WalletProps => {
     createConnector: () => {
       const connector = shouldUseWalletConnect
         ? getDefaultWalletConnectConnector(chains)
-        : new BitKeepConnector({
+        : new BitkeepConnector({
             chains,
             options: {
               shimDisconnect: true,
@@ -65,7 +106,6 @@ export const bitKeep = ({ chains }: WalletOptions): WalletProps => {
               UNSTABLE_shimOnConnectSelectAccount: true,
             },
           });
-
       return {
         connector,
         getUri: async () => {},
@@ -81,10 +121,10 @@ export const bitKeep = ({ chains }: WalletOptions): WalletProps => {
                   try {
                     const uri = await getProviderUri(connector);
                     uriString = isAndroid()
-                      ? `bitkeep://?action=connect&connectType=wc&value=${encodeURIComponent(
-                        uri
-                        )}`
-                      : `https://bkcode.vip?value=${encodeURIComponent(uri)}`;
+                    ? `bitkeep://?action=connect&connectType=wc&value=${encodeURIComponent(
+                      uri
+                      )}`
+                    : `https://bkcode.vip?value=${encodeURIComponent(uri)}`;
 
                     window.location.href = uriString;
                   } catch {
