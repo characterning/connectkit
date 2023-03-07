@@ -3,6 +3,7 @@ import { Chain, mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
 import { Provider } from '@wagmi/core';
 
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { BitKeepConnector } from './wallets/walletConnectors/bitKeepWallet/bitKeepWallet';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
@@ -80,6 +81,14 @@ const getDefaultConnectors = ({
 
   return [
     new MetaMaskConnector({
+      chains,
+      options: {
+        shimDisconnect: true,
+        shimChainChangedDisconnect: true,
+        UNSTABLE_shimOnConnectSelectAccount: true,
+      },
+    }),
+    new BitKeepConnector({
       chains,
       options: {
         shimDisconnect: true,
