@@ -114,18 +114,18 @@ const isMetaMask = () => {
 const isBitKeep = () => {
   if (typeof window === 'undefined') return false;
 
-  const { ethereum } = window;
-  if (!ethereum) return false;
+  const { bitkeep } = window;
+  if (!bitkeep) return false;
 
-  const isBitKeep = Boolean(ethereum.isBitKeep);
+  const isBitKeep = Boolean(bitkeep.ethereum?.isBitKeep);
   if (!isBitKeep) return false;
 
   const isBrave = Boolean(
-    ethereum.isBraveWallet //&& !ethereum._events && !ethereum._state
+    bitkeep.ethereum.isBraveWallet //&& !ethereum._events && !ethereum._state
   );
   if (isBrave) return false;
 
-  const isTokenary = Boolean(ethereum.isTokenary);
+  const isTokenary = Boolean(bitkeep.ethereum.isTokenary);
   if (isTokenary) return false;
 
   return true;
