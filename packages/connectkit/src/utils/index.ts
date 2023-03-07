@@ -113,8 +113,10 @@ const isMetaMask = () => {
 };
 const isBitKeep = () => {
   if (typeof window === 'undefined') return false;
-  const {ethereum} = window
+
+  const { ethereum } = window;
   if (!ethereum) return false;
+
   const isBitKeep = Boolean(ethereum.isBitKeep);
   if (!isBitKeep) return false;
 

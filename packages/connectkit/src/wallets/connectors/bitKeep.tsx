@@ -25,7 +25,7 @@ export  class  BitkeepConnector extends InjectedConnector {
     };
     super({ chains, options: _options });
 
-    this.id = 'Bitkeep';
+    this.id = 'bitKeep';
     this.ready =
       typeof window != 'undefined' &&
       !!this.findProvider(window?.bitkeep?.ethereum);
